@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
         // User login successful
         setLoading(false);
         const user = userCredential.user;
-        navigation.navigate('HomeScreen');
+        navigation.navigate('HomeScreen', { userEmail: user.email });
         // Optionally, you can save the user's login status to AsyncStorage or global state
         // e.g., AsyncStorage.setItem('userData', JSON.stringify({ loggedIn: true }));
       })
