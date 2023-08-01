@@ -1,20 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  Keyboard,
-  ScrollView,
-  Alert,
-} from 'react-native';
-
+import { View, Text, SafeAreaView, Keyboard, ScrollView, Alert } from 'react-native';
 import COLORS from '../constants/colors';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Loader from '../components/Loader';
+import { auth } from '../firebase'; // Import the firebase auth instance
 
-const RegistrationScreen = ({navigation}) => {
+const RegistrationScreen = ({ navigation }) => {
   const [inputs, setInputs] = React.useState({
     email: '',
     fullname: '',
@@ -61,56 +54,64 @@ const RegistrationScreen = ({navigation}) => {
 
   const register = () => {
     setLoading(true);
-    setTimeout(() => {
-      try {
+
+    // Use Firebase auth method to create a new user with email and password
+    auth
+      .createUserWithEmailAndPassword(inputs.email, inputs.password)
+      .then((userCredential) => {
+        // User registration successful
         setLoading(false);
-        AsyncStorage.setItem('userData', JSON.stringify(inputs));
+        const user = userCredential.user;
+        // Optionally, you can save additional user information to the database
+        // For example, you can save fullname and phone number here
+        // const userData = {
+        //   fullname: inputs.fullname,
+        //   phone: inputs.phone,
+        // };
+        // Save the userData to the database or update the user profile
+        // e.g., user.updateProfile({ displayName: inputs.fullname });
+        // Then you can navigate to the next screen
         navigation.navigate('LoginScreen');
-      } catch (error) {
-        Alert.alert('Error', 'Something went wrong');
-      }
-    }, 3000);
+      })
+      .catch((error) => {
+        setLoading(false);
+        Alert.alert('Error', error.message); // Show error message if registration fails
+      });
   };
 
   const handleOnchange = (text, input) => {
-    setInputs(prevState => ({...prevState, [input]: text}));
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
   };
   const handleError = (error, input) => {
-    setErrors(prevState => ({...prevState, [input]: error}));
+    setErrors((prevState) => ({ ...prevState, [input]: error }));
   };
+
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
       <Loader visible={loading} />
-      <ScrollView
-        contentContainerStyle={{paddingTop: 50, paddingHorizontal: 20}}>
-        <Text style={{color: COLORS.black, fontSize: 40, fontWeight: 'bold'}}>
-          Register
-        </Text>
-        <Text style={{color: COLORS.grey, fontSize: 18, marginVertical: 10}}>
-          Enter Your Details to Register
-        </Text>
-        <View style={{marginVertical: 20}}>
+      <ScrollView contentContainerStyle={{ paddingTop: 50, paddingHorizontal: 20 }}>
+        <Text style={{ color: COLORS.black, fontSize: 40, fontWeight: 'bold' }}>Register</Text>
+        <Text style={{ color: COLORS.grey, fontSize: 18, marginVertical: 10 }}>Enter Your Details to Register</Text>
+        <View style={{ marginVertical: 20 }}>
           <Input
-            onChangeText={text => handleOnchange(text, 'email')}
+            onChangeText={(text) => handleOnchange(text, 'email')}
             onFocus={() => handleError(null, 'email')}
             iconName="email-outline"
             label="Email"
             placeholder="Enter your email address"
             error={errors.email}
           />
-
           <Input
-            onChangeText={text => handleOnchange(text, 'fullname')}
+            onChangeText={(text) => handleOnchange(text, 'fullname')}
             onFocus={() => handleError(null, 'fullname')}
             iconName="account-outline"
             label="Full Name"
             placeholder="Enter your full name"
             error={errors.fullname}
           />
-
           <Input
             keyboardType="numeric"
-            onChangeText={text => handleOnchange(text, 'phone')}
+            onChangeText={(text) => handleOnchange(text, 'phone')}
             onFocus={() => handleError(null, 'phone')}
             iconName="phone-outline"
             label="Phone Number"
@@ -118,7 +119,7 @@ const RegistrationScreen = ({navigation}) => {
             error={errors.phone}
           />
           <Input
-            onChangeText={text => handleOnchange(text, 'password')}
+            onChangeText={(text) => handleOnchange(text, 'password')}
             onFocus={() => handleError(null, 'password')}
             iconName="lock-outline"
             label="Password"
@@ -135,7 +136,7 @@ const RegistrationScreen = ({navigation}) => {
               textAlign: 'center',
               fontSize: 16,
             }}>
-            Already have account ? Login
+            Already have an account? Login
           </Text>
         </View>
       </ScrollView>

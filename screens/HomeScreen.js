@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {SafeAreaView, Text, View} from 'react-native';
-import Butto from '../components/Button';
-const HomeScree = ({navigation}) => {
+import Button from '../components/Button';
+const HomeScreen = ({navigation}) => {
   const [userDetails, setUserDetails] = React.useState();
   React.useEffect(() => {
     getUserData();
@@ -39,4 +39,4 @@ const HomeScree = ({navigation}) => {
   );
 };
 
-export default HomeScree;
+export default HomeScreen;
