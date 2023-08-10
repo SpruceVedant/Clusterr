@@ -4,7 +4,7 @@
 
 
 
-#SETUP
+# SETUP
 
 - Run On Mobile Device using Expo go app
 
