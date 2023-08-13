@@ -6,7 +6,7 @@
 
 # SETUP
 
-- Run On Mobile Device using Expo go app
+- Run On Mobile Device by downloading Expo go app
 
 - Clone the repo
 `git clone https://github.com/SpruceVedant/Clusterr`
